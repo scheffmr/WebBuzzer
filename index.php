@@ -22,10 +22,11 @@ $roomPreset = isset($_GET['room']) ? htmlspecialchars($_GET['room'], ENT_QUOTES,
       <input type="text" id="username" placeholder="Teamname">
       <button onclick="enterRoom()">Beitreten</button>
     </div>
-    <div id="buzzer-section" style="display:none">
+<div id="buzzer-section" style="display:none">
   <h2 id="room-info"></h2>
   <h3 id="buzzer-status">Bereit zum Buzzern</h3>
-  <img id="buzzer" src="buzzer_off.jpg" onclick="buzz()">
+  <!-- Statt eines Bildes: ein div, das per CSS als Buzzer gezeichnet wird -->
+  <div id="buzzer" onclick="buzz()"></div>
   <p id="winner"></p>
   <!-- Button zum Teilen des Raum-Links -->
   <button id="share-room-btn" onclick="shareRoom()">Raum-Link kopieren</button>

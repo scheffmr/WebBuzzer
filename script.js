@@ -166,8 +166,10 @@ function showBuzzerSection() {
   buzzerSection.style.display = 'block';
   winnerText.textContent = '';
   buzzerStatus.textContent = 'Bereit zum Buzzern';
-  // Einheitliche Bild-Bezeichnung (z.B. .jpg)
-  buzzerButton.src = 'buzzer_off.jpg';
+  
+  // Setze den Buzzer auf "off" (rot) per CSS
+  buzzerButton.classList.remove("buzzer-on");
+  buzzerButton.classList.add("buzzer-off");
   buzzerButton.disabled = false;
 }
 
@@ -233,8 +235,8 @@ async function fetchBuzzStatus() {
 // --- UI updaten, wenn gebuzzert wurde ---
 function updateBuzzerUI(winnerName) {
   buzzerLocked = true;
-  // Einheitliche Bild-Bezeichnung (z.B. .jpg)
-  buzzerButton.src = 'buzzer_on.jpg';
+  buzzerButton.classList.remove("buzzer-off");
+  buzzerButton.classList.add("buzzer-on");
   buzzerButton.disabled = true;
   buzzerStatus.textContent = `Gebuzzert von: ${winnerName}`;
 }
@@ -242,8 +244,8 @@ function updateBuzzerUI(winnerName) {
 // --- UI zurücksetzen, wenn frei ---
 function resetBuzzerUI() {
   buzzerLocked = false;
-  // Einheitliche Bild-Bezeichnung (z.B. .jpg)
-  buzzerButton.src = 'buzzer_off.jpg';
+  buzzerButton.classList.remove("buzzer-on");
+  buzzerButton.classList.add("buzzer-off");
   buzzerButton.disabled = false;
   buzzerStatus.textContent = 'Bereit zum Buzzern';
   winnerText.textContent = '';
