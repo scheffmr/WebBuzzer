@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+
+# Falls die angeforderte URL kein existierendes File/Verzeichnis ist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Extrahiere einen Raumcode, der z. B. aus 6 Großbuchstaben/Zahlen besteht
+RewriteRule ^([A-Z0-9]{6})/?$ index.php?room=$1 [L,QSA]
