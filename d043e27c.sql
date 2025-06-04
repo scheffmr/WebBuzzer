@@ -12,21 +12,14 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Datenbank: `d043e27c`
---
+!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+!40101 SET NAMES utf8mb4 */;
 
 -- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `buzz_status`
---
+-- --------------------------------------------------------
 
 CREATE TABLE `buzz_status` (
   `room_id` int(11) NOT NULL,
@@ -36,10 +29,8 @@ CREATE TABLE `buzz_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `rooms`
---
+-- --------------------------------------------------------
 
 CREATE TABLE `rooms` (
   `id` int(11) NOT NULL,
@@ -48,10 +39,8 @@ CREATE TABLE `rooms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `users`
---
+-- --------------------------------------------------------
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
@@ -60,65 +49,67 @@ CREATE TABLE `users` (
   `joined_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Indizes der exportierten Tabellen
---
+-- --------------------------------------------------------
+-- Indizes der Tabellen
+-- --------------------------------------------------------
 
---
--- Indizes für die Tabelle `buzz_status`
---
 ALTER TABLE `buzz_status`
   ADD PRIMARY KEY (`room_id`),
   ADD KEY `buzzer_user_id` (`buzzer_user_id`);
 
---
--- Indizes für die Tabelle `rooms`
---
 ALTER TABLE `rooms`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`);
 
---
--- Indizes für die Tabelle `users`
---
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `room_id` (`room_id`);
 
---
--- AUTO_INCREMENT für exportierte Tabellen
---
+-- --------------------------------------------------------
+-- AUTO_INCREMENT-Werte
+-- --------------------------------------------------------
 
---
--- AUTO_INCREMENT für Tabelle `rooms`
---
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
---
--- AUTO_INCREMENT für Tabelle `users`
---
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- Constraints der exportierten Tabellen
---
+-- --------------------------------------------------------
+-- Fremdschlüssel-Constraints
+-- --------------------------------------------------------
 
---
--- Constraints der Tabelle `buzz_status`
---
 ALTER TABLE `buzz_status`
   ADD CONSTRAINT `buzz_status_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `buzz_status_ibfk_2` FOREIGN KEY (`buzzer_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
---
--- Constraints der Tabelle `users`
---
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE;
+
 COMMIT;
 
+-- --------------------------------------------------------
+-- Event zum automatischen Löschen alter Räume
+-- --------------------------------------------------------
+
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS `delete_old_rooms`
+ON SCHEDULE EVERY 1 HOUR
+DO
+BEGIN
+  DELETE FROM `rooms`
+  WHERE `created_at` < NOW() - INTERVAL 24 HOUR;
+END//
+
+DELIMITER ;
+
+-- --------------------------------------------------------
+-- Optional: Event Scheduler aktivieren (falls erlaubt)
+-- --------------------------------------------------------
+-- SET GLOBAL event_scheduler = ON;
+
+-- Wiederherstellen vorheriger Einstellungen
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
